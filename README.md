@@ -15,14 +15,6 @@ The goals / steps of this project are the following:
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
 
-Identifying lane lines needs a serise of several step.
-
-Calibrating Camera is to correct a Distortion. 3D object in real world is transformed to 2D image by camera but that's not perpect and needs to correct.
-* Finding chessboard corners
-* Drawing detected corners on an image
-* Camera calibration, given object points, image points, and the shape of the grayscale image:
---> Undistorting a test image
-
 Canny edge detection using Sobel operator is the base step to find lane line. 
 And then, take a certain range of gradient and apply a certain magnitude of gradient to pick up the lane lines more clearly.
 It picks up the lane lines well, but a lot of other stuff was detected too.  
@@ -38,7 +30,7 @@ to isolate lane-line pixels. Specifically, think about how you can use threshold
 
 [image1]: ./output_images/Camera_Calibration_Compare.JPG "Camera Calibration"
 [image2]: ./output_images/Undistorted_Image_Compare.JPG "Road Transformed"
-[image3]: ./examples/binary_combo_example.jpg "Binary Example"
+[image3]: ./output_images/Binary_Example.JPG "Binary Example"
 [image4]: ./examples/warped_straight_lines.jpg "Warp Example"
 [image5]: ./examples/color_fit_lines.jpg "Fit Visual"
 [image6]: ./examples/example_output.jpg "Output"
@@ -48,9 +40,7 @@ to isolate lane-line pixels. Specifically, think about how you can use threshold
 ---
 ### Camera Calibration
 
-#### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
-
-The code for this step is contained in the first code cell of the IPython notebook located in "./CarND_Advanced_Lane_Lines.ipynb". 
+#### 1. How I computed the camera matrix and distortion coefficients.
 
 I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
 
@@ -63,6 +53,9 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 #### 1. Provide an example of a distortion-corrected image.
 
 To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
+Identifying lane lines needs a serise of several step.
+
+
 ![alt text][image2]
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
