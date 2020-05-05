@@ -36,13 +36,13 @@ to isolate lane-line pixels. Specifically, think about how you can use threshold
 
 [//]: # (Image References)
 
-[image1]: ./examples/undistort_output.png "Undistorted"
-[image2]: ./test_images/test1.jpg "Road Transformed"
+[image1]: ./output_images/calibration1_undist.jpg "Undistorted"
+[image2]: ./output_images/Undistorted_image.jpg "Road Transformed"
 [image3]: ./examples/binary_combo_example.jpg "Binary Example"
 [image4]: ./examples/warped_straight_lines.jpg "Warp Example"
 [image5]: ./examples/color_fit_lines.jpg "Fit Visual"
 [image6]: ./examples/example_output.jpg "Output"
-[video1]: ./project_video.mp4 "Video"
+[video1]: ./output_images/project_video.mp4 "Video"
 
 
 ---
