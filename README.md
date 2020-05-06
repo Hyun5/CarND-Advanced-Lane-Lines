@@ -30,6 +30,9 @@ to isolate lane-line pixels. Specifically, think about how you can use threshold
 
 [image1]: ./output_images/Camera_Calibration_Compare.JPG "Camera Calibration"
 [image2]: ./output_images/Undistorted_Image_Compare.JPG "Road Transformed"
+[image21]: ./output_images/Thresholded_Gradient.JPG "Thresholded Gradient"
+[image22]: ./output_images/Thresholded_Magnitude.JPG "Thresholded_Magnitude"
+[image23]: ./output_images/Thresholded_Grad_Dir.JPG "Thresholded_Grad_Dir"
 [image3]: ./output_images/Binary_Example.JPG "Binary Example"
 [image4]: ./examples/warped_straight_lines.jpg "Warp Example"
 [image5]: ./examples/color_fit_lines.jpg "Fit Visual"
@@ -76,6 +79,7 @@ ax2.set_title('Undistorted Image', fontsize=30)
 
 ![alt text][image1]
 
+
 ### Pipeline (single images)
 
 #### 1. Provide an example of a distortion-corrected image.
@@ -86,15 +90,133 @@ Identifying lane lines needs a serise of several step.
 
 ![alt text][image2]
 
+
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
 I used a combination of color and gradient thresholds to generate a binary image.  Here's an example of my output for this step. 
 
+```
+# Calculate directional gradient
+def abs_sobel_thresh(img, orient='x', sobel_kernel=3, thresh=(0, 255)):
+    # 1) Convert to grayscale
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    # 2) Take the derivative in x or y given orient = 'x' or 'y'
+    # 3) Take the absolute value of the derivative or gradient
+    if orient == 'x':
+        abs_sobel = np.absolute(cv2.Sobel(gray, cv2.CV_64F, 1, 0))
+    if orient == 'y':
+        abs_sobel = np.absolute(cv2.Sobel(gray, cv2.CV_64F, 0, 1))
+    # 4) Scale to 8-bit (0 - 255) then convert to type = np.uint8
+    scaled_sobel = np.uint8(255*abs_sobel/np.max(abs_sobel))
+    # 5) Create a mask of 1's where the scaled gradient magnitude 
+    thresh_min = thresh[0]
+    thresh_max = thresh[1]
+    grad_binary = np.zeros_like(scaled_sobel)
+            # is > thresh_min and < thresh_max
+    grad_binary[(scaled_sobel >= thresh_min) & (scaled_sobel <= thresh_max)] = 1
+    
+    # 6) Return this mask as your binary_output image
+    return grad_binary
+```
+
+![alt text][image21]
 
 
+```
+# Calculate gradient magnitude
+def mag_thresh(img, sobel_kernel=3, mag_thresh=(0, 255)):
+    # 1) Convert to grayscale
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    # 2) Take the gradient in x and y separately
+    sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=sobel_kernel)
+    sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=sobel_kernel)
+    # 3) Calculate the magnitude 
+    gradmag = np.sqrt(sobelx**2 + sobely**2)
+    # 4) Scale to 8-bit (0 - 255) and convert to type = np.uint8
+    scale_factor = np.max(gradmag)/255
+    gradmag = (gradmag/scale_factor).astype(np.uint8)
+    # 5) Create a binary mask where mag thresholds are met
+    mag_binary = np.zeros_like(gradmag)
+    mag_binary[(gradmag >= mag_thresh[0]) & (gradmag <= mag_thresh[1])] = 1
+    
+    # 6) Return this mask as your binary_output image
+    return mag_binary
+```
+
+![alt text][image22]
+
+
+```
+# Calculate gradient direction
+def dir_threshold(img, sobel_kernel=3, thresh=(0, np.pi/2)):
+    # 1) Convert to grayscale
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    # 2) Take the gradient in x and y separately
+    # 3) Take the absolute value of the x and y gradients
+    sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=sobel_kernel)
+    sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=sobel_kernel)
+    # 4) Use np.arctan2(abs_sobely, abs_sobelx) to calculate the direction of the gradient 
+    absgraddir = np.arctan2(np.absolute(sobely), np.absolute(sobelx))
+    # 5) Create a binary mask where direction thresholds are met
+    dir_binary =  np.zeros_like(absgraddir)
+    dir_binary[(absgraddir >= thresh[0]) & (absgraddir <= thresh[1])] = 1
+    
+    # 6) Return this mask as your binary_output image
+    return dir_binary
+```
+
+![alt text][image23]
+
+
+```
+# Combined all
+def combined_s_gradient_thresholds(img, show=False):
+    # Choose a Sobel kernel size
+    ksize = 3 # Choose a larger odd number to smooth gradient measurements
+
+    # Apply each of the thresholding functions
+    gradx = abs_sobel_thresh(img, orient='x', sobel_kernel=ksize, thresh=(20, 100))
+    grady = abs_sobel_thresh(img, orient='y', sobel_kernel=ksize, thresh=(20, 100))
+    mag_binary = mag_thresh(img, sobel_kernel=ksize, mag_thresh=(20, 100))
+    dir_binary = dir_threshold(img, sobel_kernel=ksize, thresh=(0.7, 1.4))
+
+    combined = np.zeros_like(dir_binary)
+    combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
+    
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
+    s_channel = hls[:,:,2]
+
+    # Threshold color channel
+    s_thresh_min = 150
+    s_thresh_max = 255
+    s_binary = np.zeros_like(s_channel)
+    s_binary[(s_channel >= s_thresh_min) & (s_channel <= s_thresh_max)] = 1
+
+    # Combine the two binary thresholds
+    combined_binary = np.zeros_like(combined)
+    combined_binary[(s_binary == 1) | (combined == 1)] = 1
+    
+    if show == True:
+        f, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4, figsize=(20,10))
+        ax1.set_title('Actual image')
+        ax1.imshow(img)
+        ax2.set_title('Combined gradx,grady,magnitude,direction')
+        ax2.imshow(combined, cmap='gray')
+        ax3.set_title('Color thresholding')
+        ax3.imshow(s_binary, cmap='gray')
+        ax4.set_title('Combined all')
+        ax4.imshow(combined_binary, cmap='gray')
+        
+    return combined_binary   
+```
 
 
 ![alt text][image3]
+
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
