@@ -35,9 +35,9 @@ to isolate lane-line pixels. Specifically, think about how you can use threshold
 [image23]: ./output_images/Thresholded_Grad_Dir.JPG "Thresholded_Grad_Dir"
 [image24]: ./output_images/Thresholded_S.JPG "Thresholded_S"
 [image3]: ./output_images/Binary_Example.JPG "Binary Example"
-[image4]: ./examples/warped_straight_lines.jpg "Warp Example"
-[image5]: ./examples/color_fit_lines.jpg "Fit Visual"
-[image6]: ./examples/example_output.jpg "Output"
+[image4]: ./output_images/Undistorted_Warped_Image.JPG "Undistorted_Warped_Image"
+[image5]: ./output_images/Locate_lines.JPG "Locate_lines"
+[image6]: ./output_images/Output.JPG "Output"
 [video1]: ./output_images/project_video.mp4 "Video"
 
 
@@ -94,7 +94,8 @@ Identifying lane lines needs a serise of several step.
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of color and gradient thresholds to generate a binary image.  Here's an example of my output for this step. 
+Soble operator is used to get the Canny edge detection.
+Calculate the derivative in the x direction and take the absolute value of it:
 
 ```
 # Calculate directional gradient
@@ -124,6 +125,10 @@ def abs_sobel_thresh(img, orient='x', sobel_kernel=3, thresh=(0, 255)):
 ![alt text][image21]
 
 
+The x-gradient is better to pick up the lane lines.
+Computes the magnitude of the gradient and applies a threshold
+The magnitude, or absolute value, of the gradient is just the square root of the squares of the individual x and y gradients. For a gradient in both the x and y directions, the magnitude is the square root of the sum of the squares.
+
 ```
 # Calculate gradient magnitude
 def mag_thresh(img, sobel_kernel=3, mag_thresh=(0, 255)):
@@ -148,6 +153,8 @@ def mag_thresh(img, sobel_kernel=3, mag_thresh=(0, 255)):
 
 ![alt text][image22]
 
+Take the gradient in x and y separately and calculate the absolute value of the x and y gradients.
+Using np.arctan2(abs_sobely, abs_sobelx), calculate the direction of the gradient.
 
 ```
 # Calculate gradient direction
@@ -171,6 +178,7 @@ def dir_threshold(img, sobel_kernel=3, thresh=(0, np.pi/2)):
 
 ![alt text][image23]
 
+The S channel does a robust job of picking up the lines under very different color and contrast conditions.
 
 ```
 # Define a function that thresholds the S-channel of HLS
@@ -192,6 +200,8 @@ hls_binary = hls_select(image, thresh=(90, 255))
 
 ![alt text][image24]
 
+
+I used a combination of color and gradient thresholds to generate a binary image.  Here's an example of my output for this step. 
 
 ```
 # Combined all
@@ -268,21 +278,62 @@ This resulted in the following source and destination points:
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
+```
+def transform_image(img, nx, ny): 
+    offset = 100 # offset for dst points
+    
+    # Grab the image shape
+    img_size = (img.shape[1], img.shape[0])
+    
+    leftupperpoint  = [568,470]
+    rightupperpoint = [717,470]
+    leftlowerpoint  = [260,680]
+    rightlowerpoint = [1043,680]
+    src = np.float32([leftupperpoint, leftlowerpoint, rightupperpoint, rightlowerpoint])
+    dst = np.float32([[200,0], [200,680], [1000,0], [1000,680]])
+    
+    # Given src and dst points, calculate the perspective transform matrix
+    M = cv2.getPerspectiveTransform(src, dst)
+    
+    # Warp the image using OpenCV warpPerspective()
+    warped = cv2.warpPerspective(img, M, img_size, flags=cv2.INTER_NEAREST)
+    
+    return warped, M
+
+warped_img, M = transform_image(combined_binary, nx, ny)
+cv2.imwrite('output_images/Undistorted_Wraped_Image.jpg',warped_img)
+
+f, (ax1, ax2) = plt.subplots(1, 2, figsize=(24, 9))
+f.tight_layout()
+ax1.imshow(combined_binary, cmap='gray')
+ax1.set_title('Original Image', fontsize=50)
+ax2.imshow(warped_img, cmap='gray')
+ax2.set_title('Undistorted and Warped Image', fontsize=50)
+plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+
+```
+
 ![alt text][image4]
+
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+Then I did some other stuff and fit my lane lines with a 2nd order polynomial as below:
 
 ![alt text][image5]
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+
+```
+Left curvature: 967 m
+Right curvature: 1247 m
+Vehicle is 0.34m right
+```
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+Here is my result on a test image:
 
 ![alt text][image6]
 
