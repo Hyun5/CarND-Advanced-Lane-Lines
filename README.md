@@ -33,6 +33,7 @@ to isolate lane-line pixels. Specifically, think about how you can use threshold
 [image21]: ./output_images/Thresholded_Gradient.JPG "Thresholded Gradient"
 [image22]: ./output_images/Thresholded_Magnitude.JPG "Thresholded_Magnitude"
 [image23]: ./output_images/Thresholded_Grad_Dir.JPG "Thresholded_Grad_Dir"
+[image24]: ./output_images/Thresholded_S.JPG "Thresholded_S"
 [image3]: ./output_images/Binary_Example.JPG "Binary Example"
 [image4]: ./examples/warped_straight_lines.jpg "Warp Example"
 [image5]: ./examples/color_fit_lines.jpg "Fit Visual"
@@ -213,6 +214,9 @@ def combined_s_gradient_thresholds(img, show=False):
         
     return combined_binary   
 ```
+
+![alt text][image24]
+
 
 
 ![alt text][image3]
