@@ -46,6 +46,34 @@ I start by preparing "object points", which will be the (x, y, z) coordinates of
 
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
 
+```
+import pickle
+%matplotlib inline
+
+# Test undistortion on an image
+img = cv2.imread('camera_cal/calibration1.jpg')
+img_size = (img.shape[1], img.shape[0])
+
+# Do camera calibration given object points and image points
+ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img_size,None,None)
+
+dst = cv2.undistort(img, mtx, dist, None, mtx)
+cv2.imwrite('output_images/calibration1_undist.jpg',dst)
+
+# Save the camera calibration result for later use
+dist_pickle = {}
+dist_pickle["mtx"] = mtx
+dist_pickle["dist"] = dist
+pickle.dump( dist_pickle, open( "output_images/wide_dist_pickle.p", "wb" ) )
+
+# Visualize undistortion
+f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
+ax1.imshow(img)
+ax1.set_title('Original Image', fontsize=30)
+ax2.imshow(dst)
+ax2.set_title('Undistorted Image', fontsize=30)
+```
+
 ![alt text][image1]
 
 ### Pipeline (single images)
@@ -60,7 +88,11 @@ Identifying lane lines needs a serise of several step.
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+I used a combination of color and gradient thresholds to generate a binary image.  Here's an example of my output for this step. 
+
+
+
+
 
 ![alt text][image3]
 
