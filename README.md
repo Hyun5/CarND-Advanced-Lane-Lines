@@ -15,17 +15,6 @@ The goals / steps of this project are the following:
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
 
-Canny edge detection using Sobel operator is the base step to find lane line. 
-And then, take a certain range of gradient and apply a certain magnitude of gradient to pick up the lane lines more clearly.
-It picks up the lane lines well, but a lot of other stuff was detected too.  
-The direction of the gradient is much noisier than the gradient magnitude, but we should find that we can pick out particular features by orientation.
-
-Combining Thresholds
-To isolate lane-line pixels, the x and y gradients, the overall gradient magnitude, and the gradient direction to focus on pixels that are likely to be part of the lane lines.
-to isolate lane-line pixels. Specifically, think about how you can use thresholds of the x and y gradients, the overall gradient magnitude, and the gradient direction to focus on pixels that are likely to be part of the lane lines.
-
-
-
 [//]: # (Image References)
 
 [image1]: ./output_images/Camera_Calibration_Compare.JPG "Camera Calibration"
@@ -35,7 +24,7 @@ to isolate lane-line pixels. Specifically, think about how you can use threshold
 [image23]: ./output_images/Thresholded_Grad_Dir.JPG "Thresholded_Grad_Dir"
 [image24]: ./output_images/Thresholded_S.JPG "Thresholded_S"
 [image3]: ./output_images/Binary_Example.JPG "Binary Example"
-[image4]: ./output_images/Undistorted_Warped_Image.JPG "Undistorted_Warped_Image"
+[image4]: ./output_images/Undistorted_Warped_Image.jpg "Undistorted_Warped_Image"
 [image5]: ./output_images/Locate_lines.JPG "Locate_lines"
 [image6]: ./output_images/Output.JPG "Output"
 [video1]: ./output_images/project_video.mp4 "Video"
