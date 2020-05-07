@@ -422,7 +422,8 @@ Here's a [link to my video result][video1]
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-1. It work well in most of test image. But some of test image did not fit very well. Need to improve.
+1. It worked well in most of test images. But, some of test images did not fit very well. Need to improve.
+
 ![alt text][image7]
 ![alt text][image8]
 
