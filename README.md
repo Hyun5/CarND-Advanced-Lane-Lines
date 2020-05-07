@@ -426,4 +426,5 @@ Here's a [link to my video result][video1]
 ![alt text][image7]
 ![alt text][image8]
 
-2. The code could not run with "challenge_video.mp4".
+2. The code could not run with "challenge_video.mp4". (Maybe file is damaged.)
+3. The code did not performing well on "harder_challenge_video.mp4". 
