@@ -28,6 +28,8 @@ The goals / steps of this project are the following:
 [image5]: ./output_images/Locate_lines.JPG "Locate_lines"
 [image6]: ./output_images/Output.JPG "Output"
 [video1]: ./output_images/project_video.mp4 "Video"
+[image7]: ./output_images/Not_Good_1.JPG "Not_Good_1"
+[image8]: ./output_images/Not_Good_2.JPG "Not_Good_2"
 
 
 ---
@@ -420,14 +422,8 @@ Here's a [link to my video result][video1]
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+1. It work well in most of test image. But some of test image did not fit very well. Need to improve.
+![alt text][image7]
+![alt text][image8]
 
-
-
-
-
-
-
-
-
-
+2. The code could not run with "challenge_video.mp4".
