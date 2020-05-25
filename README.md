@@ -40,7 +40,7 @@ signs data set:
 * The shape of a traffic sign image is (32, 32, 3).
 * The number of unique classes/labels in the data set is 43.
 
-#### 2. Include an exploratory visualization of the dataset.
+#### 1. Include an exploratory visualization of the dataset.
 
 Here is an exploratory visualization of the data set. It is a bar chart showing how the data are exist in each lable.
 
@@ -68,13 +68,15 @@ print('Grayscale shape:', X_train_gry.shape)
 
 ![alt text][image2]
 
-As a last step, I normalized the image data because ...
-
-I decided to generate additional data because ... 
-
-To add more data to the the data set, I used the following techniques because ... 
+As a last step, I normalized the image data because it can make sure our data looks and reads the same way across all data sets.
 
 Here is an example of an original image and an augmented image:
+```
+## Normalize the train and test datasets to (-1,1)
+
+X_train_normalized = (X_train_gry - 128)/128 
+X_test_normalized = (X_test_gry - 128)/128
+```
 
 ![alt text][image3]
 
