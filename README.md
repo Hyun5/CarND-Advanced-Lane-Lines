@@ -18,10 +18,10 @@ The goals / steps of this project are the following:
 [image1]: ./examples/Visualization.JPG "Visualization"
 [image2]: ./examples/Grayscale.jpg "Grayscaling"
 [image3]: ./examples/Normalized.JPG "Normalized"
-[image4]: ./examples/10.PNG "Traffic Sign 1"
-[image5]: ./examples/10.JPG "Traffic Sign 2"
-[image6]: ./examples/17.JPG "Traffic Sign 3"
-[image7]: ./examples/3.PNG "Traffic Sign 4"
+[image4]: ./examples/10.png "Traffic Sign 1"
+[image5]: ./examples/11.JPG "Traffic Sign 2"
+[image6]: ./examples/17.png "Traffic Sign 3"
+[image7]: ./examples/3.png "Traffic Sign 4"
 [image8]: ./examples/40.JPG "Traffic Sign 5"
 
 
